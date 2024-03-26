@@ -77,6 +77,17 @@ class FileStorage:
         """Returns a dictionary of valid classes and their references"""
         from models.base_model import BaseModel
         from models.user import User
+        from models.place import Place
+        from models.state import State
+        from models.review import Review
+        from models.city import City
+        from models.amenity import Amenity
 
-        classes = {"BaseModel": BaseModel, "User": User}
+        classes = {"BaseModel": BaseModel, "User": User
+                    "Place": Place,
+                    "City": City,
+                    "State": State,
+                    "Review": Review,
+                    "Amenity": Amenity
+                }
         return classes
