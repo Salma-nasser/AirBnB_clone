@@ -83,7 +83,8 @@ class FileStorage:
         from models.city import City
         from models.amenity import Amenity
 
-        classes = {"BaseModel": BaseModel, "User": User
+        classes = {"BaseModel": BaseModel,
+                    "User": User,
                     "Place": Place,
                     "City": City,
                     "State": State,
