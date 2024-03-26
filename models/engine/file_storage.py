@@ -3,7 +3,6 @@
 import datetime
 import json
 import os
-from models.base_model import BaseModel
 
 
 class FileStorage:
@@ -18,19 +17,14 @@ class FileStorage:
 
     def new(self, obj):
         """sets in __objects the obj with key <obj class name>.id"""
-        obj_cls_name = obj.__class__.__name__
-        key = "{}.{}".format(obj_cls_name, obj.id)
+        key = "{}.{}".format(type(obj).__name__, obj.id)
         FileStorage.__objects[key] = obj
 
     def save(self):
         """ serializes __objects to the JSON file (path: __file_path)"""
-        all_objs = FileStorage.__objects
-        obj_dict = {}
-        for obj in all_obj.keys():
-            obj_dict[obj] = all_obj[obj].to_dict()
-
         with open(FileStorage.__file_path, "w", encoding="utf-8") as f:
-            json.dump(obj_dict, f)
+            d = {k: v.to_dict() for k, v in FileStorage.__objects.items()}
+            json.dump(d, f)
 
     def classes(self):
         """Returns a dictionary of valid classes and their references"""
@@ -57,11 +51,10 @@ class FileStorage:
             return
         with open(FileStorage.__file_path, "r", encoding="utf-8") as f:
             obj_dict = json.load(f)
-            for k, v in obj_dict.items():
-                class_name, obj_id = key.split('.')
-                cls = eval(class_name)
-                instance = cls(**values)
-                FileStorage.__objects = obj_dict
+            obj_dict = {k: self.classes()[v["__class__"]](**v)
+                        for k, v in obj_dict.items()}
+            # TODO: should this overwrite or insert?
+            FileStorage.__objects = obj_dict
 
     def attributes(self):
         """Returns the valid attributes and their types for classname"""
